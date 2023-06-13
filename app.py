@@ -54,6 +54,26 @@ def new_post():
     else:
         return render_template('new_post.html')
 
+@app.route('/posts/edit/<init:id>', methods=['GET', 'POST'])
+def edit(id):
+    to_edit = blogs.query.get_or_404(id)
+    if request.method == 'POST':
+        to_edit_title = request.form['title']
+        to_edit_content = request.form['post']
+        to_edit_author = request.form['author']
+
+        db.session.commit()
+        return redirect('/posts')
+    else:
+        return render_template('edit.html', post=to_edit)
+
+@app.route('/posts/delete/<int:id>')
+def delete(id):
+    to_delete = blogs.query.get_or_404(id)
+    db.session.delete(to_delete)
+    db.session.commit()
+    return redirect('/posts')
+
 
 if __name__ == "__main__":
     with app.app_context():
